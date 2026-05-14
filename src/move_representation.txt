@@ -1,0 +1,19 @@
+Each move is represented by a byte.
+A byte ABCDEFGH would be broken up into EFGH and ABCD.
+EFGH represents the type of move, according to the following key:
+  - R = 0 = 0000
+  - U = 1 = 0001
+  - F = 2 = 0010
+  - L = 3 = 0011
+  - D = 4 = 0100
+  - B = 5 = 0101
+ABCD tells the modifier of the move (e.g., R vs. R' vs. R2), by the key:
+  - Prime  (R') = 0100
+  - Double (R2) = 1000
+
+The number 0xFF (i.e., 1111 1111) is used to denote "no move".
+
+For example, the binary string 1000 0010 translates to F2 and 0100 0100 translates to D'.
+
+The move can be translated from the binary representation to a string by a combination of modular division and bit shifts.
+In particular, the type of the move can be found by using mod 16, and the modifier by using a right bit shift by 4, then mod 16.

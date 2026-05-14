@@ -14,10 +14,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets REQUIRED)
 
+include_directories(include)
+
 add_executable(RubiksCubeTimer)
 
 target_sources(RubiksCubeTimer
     PRIVATE
         src/main.cpp
+        src/RubiksCube.cpp
 )
 target_link_libraries(RubiksCubeTimer Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets)

@@ -57,5 +57,7 @@ compile_commands.json
 
 # Other
 .qt/
+.testing/
+.vscode/
 backup/
 CMakeFiles/
