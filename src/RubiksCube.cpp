@@ -5,6 +5,8 @@
 #include "RubiksCube.hpp"
 
 RubiksCube::RubiksCube() {
+    this->generateScramble();
+
     this->scrambleLen = (rand() % 11) + 20; // 20 - 30 move scramble
 
     // Allocate space for 30 moves as the scramble
@@ -107,4 +109,30 @@ QString RubiksCube::getStringScramble() const {
     scrambleStr[scrambleStr.length() - 1] = '\0';
 
     return scrambleStr;
+}
+
+void RubiksCube::generateScramble() {
+    this->scrambleLen = (rand() % 11) + 20; // 20 - 30 move scramble
+
+    // Allocate space for 30 moves as the scramble
+    this->scramble = new uint8_t[30];
+
+    // Create the scramble
+    for (int i = 0; i < this->scrambleLen; ++i) {
+        // Generate lower 4 bytes (determines the move) -- bounded [0, 5]
+        uint8_t move = rand() % 6;
+
+        // Add a modifier, bounded [0, 2]
+        // Using binary, we have 00, 01, or 10. We can transfer these to 
+        // 0000 0000, 0100 0000, and 1000 0000 via a left bit shift by 6.
+        move += ((rand() % 3) << 6);
+
+        // Add to the list of moves
+        this->scramble[i] = move;
+    }
+
+    // Fill any unused moves in the scramble with 1111 1111 (marker for "no move")
+    for (int i = this->scrambleLen; i < 30; ++i) {
+        this->scramble[i] = 0xFF;
+    }
 }

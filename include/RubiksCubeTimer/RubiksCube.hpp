@@ -21,7 +21,8 @@ public:
      */
     uint8_t* getRawScramble() const { return scramble; };
     QString getStringScramble() const;
-    
+ 
+    void generateScramble();
 private:
     uint8_t* scramble;
     int scrambleLen;

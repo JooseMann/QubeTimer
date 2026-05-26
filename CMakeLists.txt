@@ -20,7 +20,11 @@ add_executable(RubiksCubeTimer)
 
 target_sources(RubiksCubeTimer
     PRIVATE
+        # Headers (Qt Widgets)
+        include/RubiksCubeTimer/UI/Window.hpp
+        # Source files
         src/main.cpp
         src/RubiksCube.cpp
+        src/UI/Window.cpp
 )
 target_link_libraries(RubiksCubeTimer Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets)

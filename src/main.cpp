@@ -5,6 +5,7 @@
 #include <QLabel>
 
 #include "RubiksCube.hpp"
+#include "UI/Window.hpp"
 
 int main(int argc, char* argv[]) {
     // Set up randomness in advance
@@ -13,21 +14,12 @@ int main(int argc, char* argv[]) {
     // Base application
     QApplication app (argc, argv);
     
-    // Generate the scramble
-    qInfo() << "Generating Scramble...";
-    RubiksCube cube;
+    // Create the window
+    // Handles making the rubiks cube (and its scramble) in the constructor
+    UI::Window window;
 
-    // Create the font
-    QFont* font = new QFont();
-    font->setFamily("Calibri");
-    font->setPointSize(22);
-
-    // Write the scramble as a label
-    QLabel* scrambelLabel = new QLabel(cube.getStringScramble());
-    scrambelLabel->setFont(*font);
-    scrambelLabel->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
-    scrambelLabel->setIndent(10); // Only indents 10 from the top
-    scrambelLabel->show();
+    // Show the window when running the app (below) 
+    window.show();
 
     return app.exec();
 }
