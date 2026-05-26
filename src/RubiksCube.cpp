@@ -1,8 +1,8 @@
 #include <cstdint>
 #include <random>
-#include <string>
+#include <QString>
 
-#include "RubiksCubeTimer/RubiksCube.hpp"
+#include "RubiksCube.hpp"
 
 RubiksCube::RubiksCube() {
     this->scrambleLen = (rand() % 11) + 20; // 20 - 30 move scramble
@@ -46,8 +46,8 @@ RubiksCube::~RubiksCube() {
     delete [] this->scramble;
 }
 
-std::string RubiksCube::getStringScramble() const {
-    std::string scrambleStr = "";
+QString RubiksCube::getStringScramble() const {
+    QString scrambleStr("");
 
     // Translate the scramble in binary to a string.
     for (int i = 0; i < this->scrambleLen; ++i) {
@@ -61,25 +61,25 @@ std::string RubiksCube::getStringScramble() const {
         // Convert the raw move
         switch (move) {
             case 0:
-                scrambleStr += "R";
+                scrambleStr.append("R");
                 break;
             case 1:
-                scrambleStr += "U";
+                scrambleStr.append("U");
                 break;
             case 2:
-                scrambleStr += "F";
+                scrambleStr.append("F");
                 break;
             case 3:
-                scrambleStr += "L";
+                scrambleStr.append("L");
                 break;
             case 4:
-                scrambleStr += "D";
+                scrambleStr.append("D");
                 break;
             case 5:
-                scrambleStr += "B";
+                scrambleStr.append("B");
                 break;
             default:
-                scrambleStr += "[INVALID MOVE - " + std::to_string(move) + "]";
+                scrambleStr.append("[INVALID MOVE - " + std::to_string(move) + "]");
                 break;
         }
 
@@ -89,16 +89,16 @@ std::string RubiksCube::getStringScramble() const {
 
         switch (modifier) {
             case 0: // No modifier, do nothing
-                scrambleStr += " ";
+                scrambleStr.append(" ");
                 break;
             case 1: // Prime
-                scrambleStr += "' ";
+                scrambleStr.append("' ");
                 break;
             case 2: // Double
-                scrambleStr += "2 ";
+                scrambleStr.append("2 ");
                 break;
             default:
-                scrambleStr += "[INVALID MODIFIER - " + std::to_string(modifier) + "] ";
+                scrambleStr.append("[INVALID MODIFIER - " + std::to_string(modifier) + "] ");
                 break;
         }
     }

@@ -2,7 +2,7 @@
 #define RUBIKSCUBE_HPP
 
 #include <cstdint>
-#include <string>
+#include <QString>
 
 class RubiksCube {
 public:
@@ -20,7 +20,7 @@ public:
      * The string scramble is the scrambled translated from binary to 
      */
     uint8_t* getRawScramble() const { return scramble; };
-    std::string getStringScramble() const;
+    QString getStringScramble() const;
     
 private:
     uint8_t* scramble;
