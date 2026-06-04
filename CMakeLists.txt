@@ -22,9 +22,11 @@ target_sources(RubiksCubeTimer
     PRIVATE
         # Headers (Qt Widgets)
         include/RubiksCubeTimer/UI/Window.hpp
+        include/RubiksCubeTimer/UI/Timer.hpp
         # Source files
         src/main.cpp
         src/RubiksCube.cpp
         src/UI/Window.cpp
+        src/UI/Timer.cpp
 )
 target_link_libraries(RubiksCubeTimer Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets)
