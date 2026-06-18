@@ -1,3 +1,6 @@
+#include <thread>
+#include <unistd.h>
+
 #include <Qt>
 #include <QFont>
 #include <QGridLayout>
@@ -20,6 +23,11 @@ Window::Window(QWidget* parent) : QWidget(parent) {
 	m_scrambleLabel = new QLabel(m_cube->getStringScramble(), this);
 	m_font = QFont();
 	m_timer = new Timer(this);
+	m_keyEvent = new QKeyEvent(QEvent::KeyRelease, Qt::Key_Space, Qt::NoModifier);
+
+	// Additional variables for handling the timer thread
+	m_running = true;
+	m_timerThread = std::thread(timerHandler, this);
 
 	// Set the minimum size to 800x600 (though, ideally it'd be larger)
 	setMinimumSize(800, 600);
@@ -28,6 +36,26 @@ Window::Window(QWidget* parent) : QWidget(parent) {
 	setupFont();
 	setupScrambleLabel();
 	setupTimer();
+}
+
+Window::~Window() {
+	// In the destructor, delete the pointers that aren't deleted by Qt automatically
+	delete m_cube;
+	delete m_keyEvent;
+
+	// Now stop the timer thread
+	m_running = false;
+	m_timerThread.join();
+}
+
+void Window::keyPressEvent(QKeyEvent* event) {
+	// First check if the timer is currently inactive.
+	// If so, then we need to reset the timer before marking it as active
+	if (!m_timer->active()) m_timer->resetTimer();
+
+	// Mark the timer as active
+	// This will cause m_timerThread to start / stop incrementing the timer
+	m_timer->toggleActive();
 }
 
 // Set the default layout settings
@@ -95,6 +123,18 @@ void Window::setupTimer() {
 void Window::refreshScramble() {
 	// To refresh the internal scramble, just recall generateScramble() to overwrite with a new scramble
 	m_cube->generateScramble();
+}
+
+void timerHandler(Window* window) {
+	// While the program is running, check to see if we should increment the timer.
+	// If so, then go ahead. Otherwise, just keep checking.
+	while (window->running()) {
+		// If the timer is active, then increment the timer
+		if (window->timer()->active()) window->timer()->tick();
+
+		// Wait 0.01 seconds
+        usleep(10000);
+	}
 }
 
 } // UI

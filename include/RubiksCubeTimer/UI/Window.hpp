@@ -1,9 +1,12 @@
 #ifndef WINDOW_HPP
 #define WINDOW_HPP
 
+#include <thread>
+
 #include <Qt>
 #include <QFont>
 #include <QGridLayout>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QWidget>
 
@@ -17,7 +20,10 @@ Q_OBJECT
 
 public: 
 	explicit Window(QWidget* parent = nullptr);
-	~Window() { delete m_cube; } // Only the rubiks cube isn't automatically deleted, so delete it in the destructor
+	~Window(); // { delete m_cube; delete m_keyEvent; } // The rubiks cube and key event aren't deleted automatically, so delete them here
+
+	// Qt overrides
+	void keyPressEvent(QKeyEvent* event);
 
 	// QGridLayout* layout
 	QGridLayout* layout() const { return m_layout; }
@@ -38,6 +44,9 @@ public:
 	void incrementTimer() { m_timer->tick(); }
 	void setupTimer();
 
+	// bool running
+	bool running() const { return m_running; }
+
 	// Reset the scramble
 	void refreshScramble();
 
@@ -48,14 +57,21 @@ private:
 	QLabel* m_scrambleLabel; // Label that contains the scramble, to be shown on the screen
 	Timer* m_timer; // Timer to be shown on screen
 
+	// Related UI
+	QKeyEvent* m_keyEvent; // Handles watching for space to start / stop the timer
+
 	// Other
 	RubiksCube* m_cube; // Our representation of the Rubiks cube
+	bool m_running; // True while the program is running, false once it closes. Used to help manage threads.
+	std::thread m_timerThread; // The thread that handles incrementing the timer while it is active. 
 
 signals:
 public slots:
 
 };
 
+// Helper functions
+void timerHandler(Window* window);
 
 } // UI
 
