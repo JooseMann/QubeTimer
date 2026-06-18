@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 
-project(RubiksCubeTimer LANGUAGES CXX)
+project(QubeTimer LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -14,19 +14,19 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Widgets REQUIRED)
 
-include_directories(include/RubiksCubeTimer)
+include_directories(include/QubeTimer)
 
-add_executable(RubiksCubeTimer)
+add_executable(QubeTimer)
 
-target_sources(RubiksCubeTimer
+target_sources(QubeTimer
     PRIVATE
         # Headers (Qt Widgets)
-        include/RubiksCubeTimer/UI/Window.hpp
-        include/RubiksCubeTimer/UI/Timer.hpp
+        include/QubeTimer/UI/Window.hpp
+        include/QubeTimer/UI/Timer.hpp
         # Source files
         src/main.cpp
         src/RubiksCube.cpp
         src/UI/Window.cpp
         src/UI/Timer.cpp
 )
-target_link_libraries(RubiksCubeTimer Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(QubeTimer Qt${QT_VERSION_MAJOR}::Core Qt${QT_VERSION_MAJOR}::Widgets)
