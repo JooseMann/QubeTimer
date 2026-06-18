@@ -5,60 +5,42 @@
 #include "RubiksCube.hpp"
 
 RubiksCube::RubiksCube() {
-    this->generateScramble();
-
-    this->scrambleLen = (rand() % 11) + 20; // 20 - 30 move scramble
-
     // Allocate space for 30 moves as the scramble
-    this->scramble = new uint8_t[30];
+    // This space will be reused for each new solve
+    m_scramble = new uint8_t[30];
 
-    // Create the scramble
-    for (int i = 0; i < this->scrambleLen; ++i) {
-        // Generate lower 4 bytes (determines the move) -- bounded [0, 5]
-        uint8_t move = rand() % 6;
-
-        // Add a modifier, bounded [0, 2]
-        // Using binary, we have 00, 01, or 10. We can transfer these to 
-        // 0000 0000, 0100 0000, and 1000 0000 via a left bit shift by 6.
-        move += ((rand() % 3) << 6);
-
-        // Add to the list of moves
-        this->scramble[i] = move;
-    }
-
-    // Fill any unused moves in the scramble with 1111 1111 (marker for "no move")
-    for (int i = this->scrambleLen; i < 30; ++i) {
-        this->scramble[i] = 0xFF;
-    }
+    // Generate the scramble here
+    // Also determines the scramble length
+    this->generateScramble();
 }
 
 RubiksCube::RubiksCube(const RubiksCube& other) {
-    this->scrambleLen = other.scrambleLen;
+    m_scrambleLen = other.m_scrambleLen;
     
     // Allocate space for all 30 moves in this copy
-    this->scramble = new uint8_t[30];
+    m_scramble = new uint8_t[30];
 
     // Copy over the scramble from other
     for (int i = 0; i < 30; ++i) {
-        this->scramble[i] = other.scramble[i];
+        m_scramble[i] = other.m_scramble[i];
     }
 }
 
 RubiksCube::~RubiksCube() {
-    delete [] this->scramble;
+    delete [] m_scramble;
 }
 
 QString RubiksCube::getStringScramble() const {
     QString scrambleStr("");
 
     // Translate the scramble in binary to a string.
-    for (int i = 0; i < this->scrambleLen; ++i) {
+    for (int i = 0; i < m_scrambleLen; ++i) {
         // Error check, if the given move is a "no move", just skip past.
         // A value of 0xFF is "no move"
-        if (this->scramble[i] == 0xFF) continue;
+        if (m_scramble[i] == 0xFF) continue;
 
         // The raw move, without including the modifier (lower 4 bits)
-        uint8_t move = this->scramble[i] % 16;
+        uint8_t move = m_scramble[i] % 16;
 
         // Convert the raw move
         switch (move) {
@@ -87,7 +69,7 @@ QString RubiksCube::getStringScramble() const {
 
         // The modifier applied to the move (upper 4 bits)
         // Converted to 0, 1, or 2 via a right bit shift by 6.
-        uint8_t modifier = this->scramble[i] >> 6;
+        uint8_t modifier = m_scramble[i] >> 6;
 
         switch (modifier) {
             case 0: // No modifier, do nothing
@@ -112,27 +94,47 @@ QString RubiksCube::getStringScramble() const {
 }
 
 void RubiksCube::generateScramble() {
-    this->scrambleLen = (rand() % 11) + 20; // 20 - 30 move scramble
+    m_scrambleLen = (rand() % 11) + 20; // 20 - 30 move scramble
 
-    // Allocate space for 30 moves as the scramble
-    this->scramble = new uint8_t[30];
+    // Scramble creation process: generate the move, then add an optional modifier
 
-    // Create the scramble
-    for (int i = 0; i < this->scrambleLen; ++i) {
-        // Generate lower 4 bytes (determines the move) -- bounded [0, 5]
-        uint8_t move = rand() % 6;
+    // Generate the lower 4 bytes
+    // The first move can be any of the 6 faces, so we use % 6
+    uint8_t move = rand() % 6;
 
-        // Add a modifier, bounded [0, 2]
-        // Using binary, we have 00, 01, or 10. We can transfer these to 
-        // 0000 0000, 0100 0000, and 1000 0000 via a left bit shift by 6.
+    // Store the raw move in prevMove, so we can make sure that we don't have the same move twice in a row
+    uint8_t prevMove = move;
+
+    // Add a modifier, bounded [0, 2]
+    // Using binary, we have 00, 01, or 10. We can transfer these to 
+    // 0000 0000, 0100 0000, and 1000 0000 via a left bit shift by 6.
+    move += ((rand() % 3) << 6);
+
+    // Add this to the list of moves
+    m_scramble[0] = move;
+
+    // Now repeat for the rest of the moves, making sure we never repeat the same move twice
+    for (int i = 1; i < m_scrambleLen; ++i) {
+        // Generate lower 4 bytes
+        // We now want to disallow the same move from happening twice.
+        // So we take % 5 instead, and add 1 if move > prevMove
+        // This keeps the odds of the remaining 5 moves the same, but prevents the same move from happening again.
+        move = rand() % 5;
+
+        if (move >= prevMove) ++move;
+
+        // Update prevMove
+        prevMove = move;
+
+        // Add a modifier, same as above
         move += ((rand() % 3) << 6);
 
         // Add to the list of moves
-        this->scramble[i] = move;
+        m_scramble[i] = move;
     }
 
     // Fill any unused moves in the scramble with 1111 1111 (marker for "no move")
-    for (int i = this->scrambleLen; i < 30; ++i) {
-        this->scramble[i] = 0xFF;
+    for (int i = m_scrambleLen; i < 30; ++i) {
+        m_scramble[i] = 0xFF;
     }
 }

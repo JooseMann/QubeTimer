@@ -13,19 +13,19 @@ public:
     RubiksCube(const RubiksCube& other);
     ~RubiksCube();
 
-    int getScrambleLen() const { return scrambleLen; }
+    int getScrambleLen() const { return m_scrambleLen; }
 
     /*
      * The raw scramble is the scramble in its binary representation. 
      * The string scramble is the scrambled translated from binary to 
      */
-    uint8_t* getRawScramble() const { return scramble; };
+    uint8_t* getRawScramble() const { return m_scramble; };
     QString getStringScramble() const;
  
     void generateScramble();
 private:
-    uint8_t* scramble;
-    int scrambleLen;
+    uint8_t* m_scramble;
+    int m_scrambleLen;
 };
 
 #endif

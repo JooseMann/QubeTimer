@@ -49,9 +49,20 @@ Window::~Window() {
 }
 
 void Window::keyPressEvent(QKeyEvent* event) {
-	// First check if the timer is currently inactive.
-	// If so, then we need to reset the timer before marking it as active
-	if (!m_timer->active()) m_timer->resetTimer();
+	// First check whether the timer is currently active or inactive.
+	// If active, then we are stopping the timer and need to generate a new scramble.
+	// If inactive, then we are starting the timer and need to reset it before marking it as active.
+
+	// Stopping timer -> generate a new scramble
+	if (m_timer->active()) { 
+		m_cube->generateScramble();
+		m_scrambleLabel->setText(m_cube->getStringScramble());
+	}
+
+	// Starting timer -> reset timer to 0.00
+	if (!m_timer->active()) {
+		m_timer->resetTimer();
+	}
 
 	// Mark the timer as active
 	// This will cause m_timerThread to start / stop incrementing the timer
