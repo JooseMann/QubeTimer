@@ -59,9 +59,10 @@ void Window::keyPressEvent(QKeyEvent* event) {
 		m_scrambleLabel->setText(m_cube->getStringScramble());
 	}
 
-	// Starting timer -> reset timer to 0.00
+	// Starting timer -> reset timer to 0.00 and update absolute time to start measuring elapsed time
 	if (!m_timer->active()) {
 		m_timer->resetTimer();
+		m_timer->updateAbsoluteTime();
 	}
 
 	// Mark the timer as active

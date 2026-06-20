@@ -1,12 +1,15 @@
+#include <chrono>
+
 #include <Qt>
 #include <QLabel>
 #include <QString>
 #include <QObject>
 #include <QWidget>
 
-#include <format> // std::format
-
 #include "UI/Timer.hpp"
+
+// Millisecond typedef: we will need millisecond precision, so we use std::chrono here
+typedef std::chrono::time_point<std::chrono::steady_clock> ms_t;
 
 namespace UI {
 
@@ -14,6 +17,7 @@ Timer::Timer(QWidget* parent) : QWidget(parent) {
 	m_time = 0.00;
 	m_timerLabel = new QLabel(QString("0.00"), this);
 	m_active = false;
+	m_absoluteTime = std::chrono::steady_clock::now(); // Default misc. value for the absolute time
 
 	// Set up the label's font
 	QFont font ("Calibri", 48);
@@ -27,8 +31,19 @@ Timer::Timer(QWidget* parent) : QWidget(parent) {
 
 }
 
-void Timer::tick() {
-	m_time += 0.01;
+void Timer::tick() {	
+
+	// Absolute time, as of the moment that we are updating the timer
+	ms_t absoluteTime = std::chrono::steady_clock::now();
+
+	// Calculate elapsed time since last adding to the timer
+	double elapsed = this->toTimeDouble(absoluteTime) - this->toTimeDouble(m_absoluteTime);
+
+	// Now add this time to the timer, so that the timer is consistently accurate
+	m_time += elapsed;
+
+	// Update the absolute time
+	m_absoluteTime = absoluteTime;
 	
 	// Format the number as a string, use 2 decimal points
 	// Send the signal to the label to update its value
