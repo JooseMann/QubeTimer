@@ -1,8 +1,10 @@
 #include <cstdint>
 #include <random>
+#include <string>
 #include <QString>
 
 #include "RubiksCube.hpp"
+#include "SolveManager.hpp"
 
 RubiksCube::RubiksCube() {
     // Allocate space for 30 moves as the scramble
@@ -31,64 +33,8 @@ RubiksCube::~RubiksCube() {
 }
 
 QString RubiksCube::getStringScramble() const {
-    QString scrambleStr("");
-
-    // Translate the scramble in binary to a string.
-    for (int i = 0; i < m_scrambleLen; ++i) {
-        // Error check, if the given move is a "no move", just skip past.
-        // A value of 0xFF is "no move"
-        if (m_scramble[i] == 0xFF) continue;
-
-        // The raw move, without including the modifier (lower 4 bits)
-        uint8_t move = m_scramble[i] % 16;
-
-        // Convert the raw move
-        switch (move) {
-            case 0:
-                scrambleStr.append("R");
-                break;
-            case 1:
-                scrambleStr.append("U");
-                break;
-            case 2:
-                scrambleStr.append("F");
-                break;
-            case 3:
-                scrambleStr.append("L");
-                break;
-            case 4:
-                scrambleStr.append("D");
-                break;
-            case 5:
-                scrambleStr.append("B");
-                break;
-            default:
-                scrambleStr.append("[INVALID MOVE - " + std::to_string(move) + "]");
-                break;
-        }
-
-        // The modifier applied to the move (upper 4 bits)
-        // Converted to 0, 1, or 2 via a right bit shift by 6.
-        uint8_t modifier = m_scramble[i] >> 6;
-
-        switch (modifier) {
-            case 0: // No modifier, do nothing
-                scrambleStr.append(" ");
-                break;
-            case 1: // Prime
-                scrambleStr.append("' ");
-                break;
-            case 2: // Double
-                scrambleStr.append("2 ");
-                break;
-            default:
-                scrambleStr.append("[INVALID MODIFIER - " + std::to_string(modifier) + "] ");
-                break;
-        }
-    }
-
-    // The last character in scrambleStr will always be an extraneous space, remove that here
-    scrambleStr[scrambleStr.length() - 1] = '\0';
+    // Convert our scramble to a std::string, then to a QString using its C string.
+    QString scrambleStr(SolveManager::ScrambleToString(m_scramble, m_scrambleLen).c_str());
 
     return scrambleStr;
 }
@@ -138,3 +84,4 @@ void RubiksCube::generateScramble() {
         m_scramble[i] = 0xFF;
     }
 }
+

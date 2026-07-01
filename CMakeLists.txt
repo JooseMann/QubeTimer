@@ -26,6 +26,7 @@ target_sources(QubeTimer
         # Source files
         src/main.cpp
         src/RubiksCube.cpp
+        src/SolveManager.cpp
         src/UI/Window.cpp
         src/UI/Timer.cpp
 )

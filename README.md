@@ -35,5 +35,6 @@ This generates the `QubeTimer` executable in the `build/` directory.
 - [X] A running timer that shows the time it takes to solve the cube.
   - [X] Keybinds to start and stop the timer on command.
 - [ ] A system that records your solves over time, and computes statistics about them.
+  - [ ] Show the statistics (ao5, ao12, ao100, session average) on screen
 - [ ] A scramble display that shows the correct scramble state, to verify that the scramble was done correctly.
 - [ ] Allow randomly generated scrambles for other cubes (e.g., 2x2 and 4x4 scrambles).

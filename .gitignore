@@ -61,6 +61,7 @@ compile_commands.json
 .vscode/
 backup/
 CMakeFiles/
+*.csv
 
 # Custom compile & run scripts
 compile.sh

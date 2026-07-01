@@ -5,11 +5,16 @@
 #include <QLabel>
 
 #include "RubiksCube.hpp"
+#include "SolveManager.hpp"
 #include "UI/Window.hpp"
 
 int main(int argc, char* argv[]) {
     // Set up randomness in advance
     srand(time(nullptr));
+
+    // Create our solve manager, to keep track of past solves
+    // test_solves.csv is filled with random solves 
+    SolveManager* solveManager = new SolveManager("../test_solves.csv");
 
     // Base application
     QApplication app (argc, argv);
@@ -26,6 +31,7 @@ int main(int argc, char* argv[]) {
 
     // Cleanup
     delete window;
+    delete solveManager;
 
     return rc;
 }
